@@ -2,6 +2,205 @@
 <html>
 <head>
     <title>Place Order</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #F7F7F7;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #854836;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h2, h3 {
+            color: #854836;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            color: #854836;
+            font-weight: bold;
+            min-width: 120px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 2px solid #FFB22C;
+            border-radius: 5px;
+            width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #854836;
+            box-shadow: 0 0 5px rgba(133, 72, 54, 0.3);
+        }
+
+        button {
+            background-color: #FFB22C;
+            color: #000000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #854836;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        th {
+            background-color: #854836;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        #cartBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #854836;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        #cartBtn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #F7F7F7;
+            margin: 5% auto;
+            padding: 30px;
+            width: 70%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #854836;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 0.9em;
+            text-align: right;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #854836;
+            color: white;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            input[type="text"] {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+
     <script>
         var cart = [];
         var customer = null;
@@ -82,26 +281,9 @@
             loadItems(search);
         }
 
-        function addToCart(id, name, price) {
-            var item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty += 1;
-            } else {
-                cart.push({id:id, name:name, price:price, qty:1});
-            }
-            saveCart();
-            displayCartBtn();
-        }
-
         function saveCart() {
             sessionStorage.setItem("cart", JSON.stringify(cart));
             sessionStorage.setItem("customer", JSON.stringify(customer));
-        }
-
-        function displayCartBtn() {
-            var totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-            document.getElementById("cartBtn").style.display = "inline";
-            document.getElementById("cartBtn").innerText = "Cart (" + totalQty + ")";
         }
 
         function showCart() {
@@ -128,6 +310,18 @@
             displayCartBtn();
         }
 
+        function addToCart(id, name, price) {
+            cart.push({id:id, name:name, price:price});
+            saveCart();
+            displayCartBtn();
+        }
+
+        function displayCartBtn() {
+            document.getElementById("cartBtn").style.display = "inline";
+            document.getElementById("cartBtn").innerText = "Cart (" + cart.length + ")";
+        }
+
+        // Renders the cart without total or subtotal
         function renderCart() {
             var container = document.getElementById("cartContent");
             if (cart.length === 0) {
@@ -135,101 +329,98 @@
                 document.getElementById("checkoutBtn").style.display = "none";
                 return;
             }
-            var html = "<table border='1'><tr><th>Name</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Remove</th></tr>";
-            var grandTotal = 0;
+            var html = "<table><tr><th>Item</th><th>Price</th><th>Action</th></tr>";
             for (var i = 0; i < cart.length; i++) {
-                var subtotal = cart[i].qty * cart[i].price;
-                grandTotal += subtotal;
                 html += "<tr>";
                 html += "<td>" + cart[i].name + "</td>";
                 html += "<td>" + cart[i].price.toFixed(2) + "</td>";
-                html += `<td><input type='number' min='1' value='${cart[i].qty}' onchange='updateQuantity(${i}, this.value)' style='width:50px;' /></td>`;
-                html += "<td>" + subtotal.toFixed(2) + "</td>";
                 html += `<td><button onclick='removeItem(${i})'>Remove</button></td>`;
                 html += "</tr>";
             }
-            html += `<tr><td colspan='3'><b>Total</b></td><td colspan='2'><b>${grandTotal.toFixed(2)}</b></td></tr>`;
             html += "</table>";
             container.innerHTML = html;
             document.getElementById("checkoutBtn").style.display = "block";
         }
 
+        // Shows receipt without total, subtotal, only item list and customer details
         function checkout() {
-            // Show summary/bill
             var billDiv = document.getElementById("billDiv");
-            var html = "<h3>Order Summary</h3>";
+            var html = "<div class='modal-content'>";
+            html += "<h3>Order Receipt</h3>";
             if (customer) {
+                html += "<div class='customer-info card'>";
                 html += "<p><b>Customer Name:</b> " + customer.name + "<br/>";
                 html += "<b>Phone:</b> " + customer.phone + "</p>";
-            } else {
-                html += "<p>No customer info.</p>";
+                html += "</div>";
             }
-            html += "<table border='1'><tr><th>Name</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr>";
-            var grandTotal = 0;
+            html += "<table><tr><th>Item</th><th>Price</th></tr>";
             for (var i = 0; i < cart.length; i++) {
-                var subtotal = cart[i].qty * cart[i].price;
-                grandTotal += subtotal;
-                html += "<tr><td>" + cart[i].name + "</td><td>" + cart[i].price.toFixed(2) + "</td><td>" + cart[i].qty + "</td><td>" + subtotal.toFixed(2) + "</td></tr>";
+                html += "<tr>";
+                html += "<td>" + cart[i].name + "</td>";
+                html += "<td>" + cart[i].price.toFixed(2) + "</td>";
+                html += "</tr>";
             }
-            html += `<tr><td colspan='3'><b>Total</b></td><td><b>${grandTotal.toFixed(2)}</b></td></tr>`;
             html += "</table>";
+            html += "<button onclick='window.print()' style='margin-top: 20px;'>Print Receipt</button>";
+            html += "</div>";
             billDiv.innerHTML = html;
             billDiv.style.display = "block";
         }
-
-        window.onload = function() {
-            // Restore cart/customer from sessionStorage if needed
-            var cartData = sessionStorage.getItem("cart");
-            var custData = sessionStorage.getItem("customer");
-            cart = cartData ? JSON.parse(cartData) : [];
-            customer = custData ? JSON.parse(custData) : null;
-            displayCartBtn();
-        }
     </script>
-    <style>
-        #orderSection, #cartBtn, #cartDiv, #billDiv { display:none; }
-        #cartDiv {
-            position: fixed; top: 10%; left: 25%; width: 50%; background: #fff; padding: 20px; border: 2px solid #333; z-index:999;
-        }
-        #billDiv {
-            position: fixed; top: 15%; left: 30%; width: 40%; background: #f7f7f7; padding: 20px; border: 2px solid #333; z-index:999;
-        }
-    </style>
 </head>
 <body>
-    <h2>Place Order</h2>
-    <div>
-        <label>Customer Phone:</label>
-        <input type="text" id="cphone" required />
-        <button onclick="lookupCustomer()">Check</button>
-        <div id="customerDisplay"></div>
-        <div id="customerNameDiv" style="display:none;">
-            <label>Customer Name:</label>
-            <input type="text" id="cname" required />
+    <a href="main.jsp" class="back-button">← Back to Main</a>
+
+    <div class="header">
+        <h2>Place Order</h2>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h3>Customer Information</h3>
+            <div class="input-group">
+                <label>Customer Phone:</label>
+                <input type="text" id="cphone" required placeholder="Enter phone number" />
+                <button onclick="lookupCustomer()">Check</button>
+            </div>
+            <div id="customerDisplay"></div>
+            <div id="customerNameDiv" style="display:none;">
+                <div class="input-group">
+                    <label>Customer Name:</label>
+                    <input type="text" id="cname" required placeholder="Enter customer name" />
+                </div>
+            </div>
+            <button id="startOrderBtn" onclick="startOrder()" style="display:none;">Start Order</button>
         </div>
-        <button id="startOrderBtn" onclick="startOrder()" style="display:none;">Start Order</button>
-    </div>
-    <br/>
 
-    <!-- Items and Cart -->
-    <div id="orderSection">
-        <label>Search Item by Name:</label>
-        <input type="text" id="searchTxt" />
-        <button onclick="searchItems()">Search</button>
-        <br/><br/>
-        <div id="itemsList"></div>
+        <div id="orderSection">
+            <div class="card">
+                <div class="input-group">
+                    <label>Search Items:</label>
+                    <input type="text" id="searchTxt" placeholder="Search by item name" />
+                    <button onclick="searchItems()">Search</button>
+                </div>
+                <div id="itemsList"></div>
+            </div>
+        </div>
+
         <button id="cartBtn" onclick="showCart()">Cart (0)</button>
-    </div>
 
-    <!-- Cart Modal -->
-    <div id="cartDiv">
-        <h3>Cart</h3>
-        <div id="cartContent"></div>
-        <button onclick="hideCart()">Close</button>
-        <button id="checkoutBtn" onclick="checkout()" style="display:none;">Checkout</button>
-    </div>
+        <div id="cartDiv" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="hideCart()">&times;</button>
+                <h3>Shopping Cart</h3>
+                <div id="cartContent"></div>
+                <div style="margin-top: 20px;">
+                    <button onclick="hideCart()">Continue Shopping</button>
+                    <button id="checkoutBtn" onclick="checkout()" style="display:none;">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
 
-    <!-- Bill Modal -->
-    <div id="billDiv"></div>
+        <div id="billDiv" class="modal"></div>
+    </div>
 </body>
 </html>
+
+

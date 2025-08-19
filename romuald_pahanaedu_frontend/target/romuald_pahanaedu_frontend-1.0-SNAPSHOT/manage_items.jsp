@@ -2,7 +2,204 @@
 <html>
 <head>
     <title>Manage Items</title>
-    <script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #F7F7F7;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #854836;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+            margin-right: 10px;
+            font-weight: bold;
+            color: #854836;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 8px 12px;
+            border: 2px solid #FFB22C;
+            border-radius: 5px;
+            width: 200px;
+            margin-right: 10px;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #854836;
+            box-shadow: 0 0 5px rgba(133, 72, 54, 0.3);
+        }
+
+        button {
+            background-color: #FFB22C;
+            color: #000000;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #854836;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        #editForm {
+            display: none;
+            background: #F7F7F7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #FFB22C;
+        }
+
+        #itemsList {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        th {
+            background-color: #854836;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .search-box {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #854836;
+            color: white;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+    <!-- Keep your existing script section here -->
+  <script>
         function addItem() {
             var name = document.getElementById("iname").value;
             var price = document.getElementById("iprice").value;
@@ -120,46 +317,98 @@
             loadItems();
         }
     </script>
-    <style>
-        #editForm {
-            display: none;
-            background: #eee;
-            padding: 10px;
-            border: 1px solid #aaa;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
-    <h2>Manage Items</h2>
-    <!-- Add Item Form -->
-    <form onsubmit="event.preventDefault();addItem();">
-        <label>Name:</label><input type="text" id="iname" required />
-        <label>Price:</label><input type="number" id="iprice" step="0.01" min="0" required />
-        <button type="submit">Add Item</button>
-    </form>
-    <div id="addResult"></div>
-    <br />
-
-    <!-- Edit Item Form -->
-    <div id="editForm">
-        <h3>Edit Item</h3>
-        <input type="hidden" id="editId" />
-        <label>Name:</label><input type="text" id="editName" required />
-        <label>Price:</label><input type="number" id="editPrice" step="0.01" min="0" required />
-        <button onclick="editItem()">Update</button>
-        <button onclick="hideEditForm()">Cancel</button>
-        <div id="editResult"></div>
+    <a href="main.jsp" class="back-button button">← Back to Main</a>
+    
+    <div class="header">
+        <h2>Manage Items</h2>
+        
     </div>
-    <br />
 
-    <!-- Search Form -->
-    <label>Search by Name:</label>
-    <input type="text" id="searchTxt" />
-    <button onclick="searchItems()">Search</button>
-    <br /><br />
+    <div class="container">
+        <!-- Add Item Form -->
+        <div class="form-group">
+            <h3>Add New Item</h3>
+            <form onsubmit="event.preventDefault();addItem();">
+                <div class="input-group">
+                    <label>Name:</label>
+                    <input type="text" id="iname" required placeholder="Enter item name" />
+                </div>
+                <div class="input-group">
+                    <label>Price:</label>
+                    <input type="number" id="iprice" step="0.01" min="0" required placeholder="Enter price" />
+                </div>
+                <button type="submit">Add Item</button>
+            </form>
+            <div id="addResult"></div>
+        </div>
 
-    <!-- Items List Table -->
-    <div id="itemsList"></div>
+        <!-- Edit Item Form -->
+        <div id="editForm">
+            <h3>Edit Item</h3>
+            <input type="hidden" id="editId" />
+            <div class="input-group">
+                <label>Name:</label>
+                <input type="text" id="editName" required />
+            </div>
+            <div class="input-group">
+                <label>Price:</label>
+                <input type="number" id="editPrice" step="0.01" min="0" required />
+            </div>
+            <div class="button-group">
+                <button onclick="editItem()">Update</button>
+                <button onclick="hideEditForm()">Cancel</button>
+            </div>
+            <div id="editResult"></div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <label>Search:</label>
+            <input type="text" id="searchTxt" placeholder="Search by item name..." />
+            <button onclick="searchItems()">Search</button>
+        </div>
+
+        <!-- Items List Table -->
+        <div id="itemsList"></div>
+    </div>
+
+    <!-- Modify the loadItems function to add classes to buttons -->
+    <script>
+        const originalLoadItems = window.loadItems;
+        window.loadItems = function(search = "") {
+            var url = "http://localhost:8080/romuald_pahanaedu_backend/webresources/items";
+            if (search) url += "?search=" + encodeURIComponent(search);
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    var resp = JSON.parse(xhr.responseText);
+                    var container = document.getElementById("itemsList");
+                    if (resp.status === "success") {
+                        var arr = resp.items;
+                        var html = "<table><tr><th>ID</th><th>Name</th><th>Price</th><th>Actions</th></tr>";
+                        for (var i = 0; i < arr.length; i++) {
+                            html += "<tr>";
+                            html += "<td>" + arr[i].id + "</td>";
+                            html += "<td id='iname_" + arr[i].id + "'>" + arr[i].name + "</td>";
+                            html += "<td id='iprice_" + arr[i].id + "'>" + arr[i].price.toFixed(2) + "</td>";
+                            html += "<td class='button-group'>";
+                            html += "<button onclick='showEditForm(" + arr[i].id + ")'>Edit</button> ";
+                            html += "<button class='delete-btn' onclick='deleteItem(" + arr[i].id + ")'>Delete</button>";
+                            html += "</td>";
+                            html += "</tr>";
+                        }
+                        html += "</table>";
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = "<div class='error'>" + resp.message + "</div>";
+                    }
+                }
+            };
+            xhr.send();
+        };
+    </script>
 </body>
 </html>
