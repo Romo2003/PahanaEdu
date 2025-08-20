@@ -1,8 +1,0 @@
-com\mycompany\romuald_pahanaedu_backend\resources\ItemResource.class
-com\mycompany\romuald_pahanaedu_backend\utils\DBUtil.class
-com\mycompany\romuald_pahanaedu_backend\resources\JakartaEE10Resource.class
-com\mycompany\romuald_pahanaedu_backend\resources\CustomerResource.class
-com\mycompany\romuald_pahanaedu_backend\model\Customer.class
-com\mycompany\romuald_pahanaedu_backend\JakartaRestConfiguration.class
-com\mycompany\romuald_pahanaedu_backend\model\Item.class
-com\mycompany\romuald_pahanaedu_backend\resources\LoginResource.class
